@@ -40,12 +40,45 @@ func NewStorageService(cfg *config.Config) (StorageService, error) {
 		Secure: cfg.UseSSL,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to minio: %w", err)
+	}
+
+	ctx := context.Background()
+
+	// 1. Pastikan Bucket Ada
+	exists, err := client.BucketExists(ctx, cfg.BucketName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check bucket existence: %w", err)
+	}
+
+	if !exists {
+		err = client.MakeBucket(ctx, cfg.BucketName, minio.MakeBucketOptions{})
+		if err != nil {
+			return nil, fmt.Errorf("failed to create bucket: %w", err)
+		}
+	}
+
+	// 2. Set Policy "public-read" pada Bucket
+	policy := fmt.Sprintf(`{
+		"Version": "2012-10-17",
+		"Statement": [
+			{
+				"Effect": "Allow",
+				"Principal": {"AWS": ["*"]},
+				"Action": ["s3:GetObject"],
+				"Resource": ["arn:aws:s3:::%s/*"]
+			}
+		]
+	}`, cfg.BucketName)
+
+	err = client.SetBucketPolicy(ctx, cfg.BucketName, policy)
+	if err != nil {
+		log.Printf("Warning: Gagal menerapkan public-read policy pada bucket: %v\n", err)
 	}
 
 	return &storageService{
-		cfg:         cfg,
 		minioClient: client,
+		cfg:         cfg,
 	}, nil
 }
 
