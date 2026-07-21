@@ -1,10 +1,9 @@
 # ==========================================
 # STAGE 1: Build Binary
 # ==========================================
-FROM golang:1.22-alpine AS builder
+FROM golang:1.25-bookworm AS builder
 
-# Install ca-certificates untuk mendukung HTTPS ke S3/MinIO
-RUN apk add --no-cache git ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -21,17 +20,17 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o server ./cmd/server/ma
 # ==========================================
 # STAGE 2: Lightweight Runner
 # ==========================================
-FROM alpine:latest
+FROM debian:bookworm-slim
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates tzdata && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Copy binary dari stage builder
 COPY --from=builder /app/server .
 
-# Expose port (default 8181)
-EXPOSE 8181
+# Expose port (default 8080)
+EXPOSE 8080
 
 # Jalankan aplikasi
 CMD ["./server"]
