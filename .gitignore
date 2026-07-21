@@ -1,0 +1,29 @@
+# Binary & Build Output (Tanda '/' di depan artinya HANYA file di root folder)
+/server
+/main
+/bin/
+*.exe
+*.exe-
+*.dll
+*.so
+*.dylib
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# Temporary Files / Uploads
+tmp/
+temp/

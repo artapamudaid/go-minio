@@ -1,0 +1,24 @@
+package response
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type APIResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message,omitempty"`
+}
+
+func JSON(w http.ResponseWriter, statusCode int, payload interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(payload)
+}
+
+func Error(w http.ResponseWriter, statusCode int, message string) {
+	JSON(w, statusCode, APIResponse{
+		Success: false,
+		Message: message,
+	})
+}

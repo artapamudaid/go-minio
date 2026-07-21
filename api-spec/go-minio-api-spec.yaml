@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: go-minio-api-spec
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Check Health
+      operationId: home_developer_documents_bruno_go-minio_check_health_yml
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      servers:
+        - url: http://localhost:8181
+  /upload:
+    post:
+      summary: Upload File
+      operationId: home_developer_documents_bruno_go-minio_upload_file_yml
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/upload_file'
+      servers:
+        - url: http://localhost:8181
+  /list:
+    get:
+      summary: List Files
+      operationId: home_developer_documents_bruno_go-minio_list_files_yml
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: secret
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{SERVER_SECRET_KEY}}'
+        - name: client
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: clientA
+        - name: folder
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: invoices
+      servers:
+        - url: http://localhost:8181
+  /view:
+    post:
+      summary: View File
+      operationId: home_developer_documents_bruno_go-minio_view_file_yml
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/view_file'
+      servers:
+        - url: http://localhost:8181
+  /delete:
+    post:
+      summary: Delete File
+      operationId: home_developer_documents_bruno_go-minio_delete_file_yml
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: secret
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{SERVER_SECRET_KEY}}'
+        - name: file
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: >-
+            https://api-minio.indoweb.id/arta-bucket/clientA/uploads/invoices/e2f7c226-361b-4de6-a0a9-38fede14310c.png
+      servers:
+        - url: http://localhost:8181
+servers: []
+components:
+  schemas:
+    upload_file:
+      type: object
+      properties:
+        secret:
+          type: string
+        client:
+          type: string
+        folder:
+          type: string
+        file:
+          type: array
+          items:
+            type: string
+    view_file:
+      type: object
+      properties:
+        secret:
+          type: string
+        url:
+          type: string
+  requestBodies:
+    upload_file:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/upload_file'
+      description: ''
+      required: true
+    view_file:
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/view_file'
+      description: ''
+      required: true
+  securitySchemes: {}
