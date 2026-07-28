@@ -53,8 +53,9 @@ Run Docker Container dengan File `.env`:
 ```bash
 docker run -d \
   --name minio-storage-app \
-  -p 8080:8080 \
+  --restart unless-stopped \
   --env-file .env \
+  -p 8080:8080 \
   minio-app:latest
 ```
 
