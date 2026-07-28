@@ -20,7 +20,7 @@ func Setup(cfg *config.Config, storageHandler *handler.StorageHandler) http.Hand
 	globalLimiter := middleware.NewGlobalLimiter(rate.Limit(float64(rps)), burst)
 
 	protect := func(h http.HandlerFunc) http.HandlerFunc {
-		return middleware.GlobalRateLimit(globalLimiter, middleware.SecretAuth(cfg, h))
+		return middleware.ParseBody(middleware.GlobalRateLimit(globalLimiter, middleware.SecretAuth(cfg, h)))
 	}
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {

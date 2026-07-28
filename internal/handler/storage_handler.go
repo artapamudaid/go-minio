@@ -21,8 +21,6 @@ func (h *StorageHandler) Upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r.ParseMultipartForm(50 << 20) // Max 50MB
-
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		response.Error(w, http.StatusBadRequest, "file tidak terdeteksi")
